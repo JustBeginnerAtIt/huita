@@ -1,0 +1,29 @@
+package com.practice.userservice.serviceImpl;
+
+import com.practice.userservice.dto.UserDto;
+import com.practice.userservice.mapping.UserMapping;
+import com.practice.userservice.repository.UserRepository;
+import com.practice.userservice.service.UserService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    private final UserMapping userMapping;
+
+    @Override
+    public void createUser(UserDto userDto) {
+        userRepository.save(userMapping.mapToEntity(userDto));
+    }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
+}
