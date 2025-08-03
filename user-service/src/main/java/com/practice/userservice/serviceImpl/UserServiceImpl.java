@@ -1,6 +1,7 @@
 package com.practice.userservice.serviceImpl;
 
 import com.practice.userservice.dto.UserDto;
+import com.practice.userservice.entity.User;
 import com.practice.userservice.mapping.UserMapping;
 import com.practice.userservice.repository.UserRepository;
 import com.practice.userservice.service.UserService;
@@ -33,8 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Integer userId) {
-        return userRepository.findById(userId)
-                .map(userMapping::mapToDto)
+        Optional<UserDto> optUserDto = userRepository.findById(userId)
+                .map(userMapping::mapToDto);
+        return optUserDto
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
