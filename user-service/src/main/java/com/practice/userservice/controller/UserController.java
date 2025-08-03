@@ -5,6 +5,9 @@ import com.practice.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -17,8 +20,18 @@ public class UserController {
         userService.createUser(userDto);
     }
 
-    @DeleteMapping("/delete")
-    public void deleteUser(@RequestParam Integer userId) {
+    @DeleteMapping("/delete/{userId}")
+    public void deleteUser(@PathVariable("userId") Integer userId) {
         userService.deleteUser(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public UserDto getUser(@PathVariable("userId") Integer userId) {
+        return userService.getUserById(userId);
+    }
+
+    @GetMapping("/all")
+    public List<UserDto> getUsers() {
+        return userService.getAllUsers();
     }
 }

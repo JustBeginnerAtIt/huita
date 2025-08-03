@@ -18,7 +18,7 @@ public class UserMapping {
                 .build();
     }
 
-    public User mapToEntity(UserDto userDto) {
+    public mapToEntity(UserDto userDto) {
 
         if (userDto == null) {
             return null;
