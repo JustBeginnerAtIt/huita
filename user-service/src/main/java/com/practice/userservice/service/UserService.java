@@ -1,13 +1,13 @@
 package com.practice.userservice.service;
 
-import com.practice.userservice.dto.UserDto;
+import com.practice.userservice.dto.UserRequestDto;
+import com.practice.userservice.dto.UserResponseDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    void createUser(UserDto userDto);
+    void createUser(UserRequestDto userDto);
     void deleteUser(Integer userId);
-    UserDto getUserById(Integer userId);
-    List<UserDto> getAllUsers();
+    UserResponseDto getUserById(Integer userId);
+    List<UserResponseDto> getAllUsers();
 }

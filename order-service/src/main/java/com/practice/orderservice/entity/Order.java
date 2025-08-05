@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer orderId;
 
     private String description;
 
@@ -42,7 +42,7 @@ public class Order {
                 : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         Order order = (Order) o;
-        return getId() != null && Objects.equals(getId(), order.getId());
+        return getOrderId() != null && Objects.equals(getOrderId(), order.getOrderId());
     }
 
     @Override

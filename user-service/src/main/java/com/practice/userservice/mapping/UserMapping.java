@@ -1,24 +1,27 @@
 package com.practice.userservice.mapping;
 
-import com.practice.userservice.dto.UserDto;
+import com.practice.userservice.dto.UserRequestDto;
+import com.practice.userservice.dto.UserResponseDto;
 import com.practice.userservice.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapping {
-    public UserDto mapToDto(User user) {
+    public UserResponseDto mapToDto(User user) {
 
         if (user == null) {
             return null;
         }
 
-        return UserDto.builder()
+        return UserResponseDto.builder()
+                .userId(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .role(user.getRole())
                 .build();
     }
 
-    public User mapToEntity(UserDto userDto) {
+    public User mapToEntity(UserRequestDto userDto) {
 
         if (userDto == null) {
             return null;

@@ -1,7 +1,7 @@
 package com.practice.userservice.serviceImpl;
 
-import com.practice.userservice.dto.UserDto;
-import com.practice.userservice.entity.User;
+import com.practice.userservice.dto.UserRequestDto;
+import com.practice.userservice.dto.UserResponseDto;
 import com.practice.userservice.mapping.UserMapping;
 import com.practice.userservice.repository.UserRepository;
 import com.practice.userservice.service.UserService;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +24,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapping userMapping;
 
     @Override
-    public void createUser(UserDto userDto) {
-        userRepository.save(userMapping.mapToEntity(userDto));
+    public void createUser(UserRequestDto userRequestDto) {
+        userRepository.save(userMapping.mapToEntity(userRequestDto));
     }
 
     @Override
@@ -33,19 +34,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Integer userId) {
-        Optional<UserDto> optUserDto = userRepository.findById(userId)
+    public UserResponseDto getUserById(Integer userId) {
+        Optional<UserResponseDto> optUserDto = userRepository.findById(userId)
                 .map(userMapping::mapToDto);
         return optUserDto
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<UserDto> dtoList = userRepository.findAll()
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
                 .stream()
                 .map(userMapping::mapToDto)
-                .toList();
-        return dtoList;
+                .collect(Collectors.toList());
     }
 }

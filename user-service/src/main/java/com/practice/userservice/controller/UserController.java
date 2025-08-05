@@ -1,12 +1,13 @@
 package com.practice.userservice.controller;
 
-import com.practice.userservice.dto.UserDto;
+import com.practice.userservice.dto.UserRequestDto;
+import com.practice.userservice.dto.UserResponseDto;
 import com.practice.userservice.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -16,8 +17,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/create")
-    public void createUser(@RequestBody UserDto userDto) {
-        userService.createUser(userDto);
+    public void createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+        userService.createUser(userRequestDto);
     }
 
     @DeleteMapping("/delete/{userId}")
@@ -26,12 +27,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUser(@PathVariable("userId") Integer userId) {
+    public UserResponseDto getUser(@PathVariable("userId") Integer userId) {
         return userService.getUserById(userId);
     }
 
     @GetMapping("/all")
-    public List<UserDto> getUsers() {
+    public List<UserResponseDto> getUsers() {
         return userService.getAllUsers();
     }
 }
