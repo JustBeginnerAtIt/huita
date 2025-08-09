@@ -1,43 +1,65 @@
 package com.practice.userservice.exception;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class UserServiceGlobalExceptionHandler {
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(EntityNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        ErrorCode.NOT_FOUND.getDescription(),
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ),
+                HttpStatus.NOT_FOUND
+        );
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse("BAD_REQUEST", ex.getMessage()));
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        ErrorCode.BAD_REQUEST.getDescription(),
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage()));
+        return new ResponseEntity<>(
+            new ErrorResponse(
+                ErrorCode.INTERNAL_SERVER_ERROR.getDescription(),
+                    ex.getMessage(),
+                    LocalDateTime.now()
+            ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldErrors()
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        String errors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        return ResponseEntity.badRequest().body(new ErrorResponse("VALIDATION_ERROR", message));
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        ErrorCode.VALIDATION_ERROR.getDescription(),
+                        errors,
+                        LocalDateTime.now()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
     }
 }
