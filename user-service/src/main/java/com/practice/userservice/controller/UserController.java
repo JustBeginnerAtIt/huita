@@ -41,6 +41,6 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsers() {
         List<UserResponseDto> users = userService.getAllUsers();
-        return ResponseEntity.ok(ApiResponse.getSuccessResponse("User found successfully", users));
+        return ResponseEntity.ok(ApiResponse.getSuccessResponse("Users found successfully", users));
     }
 }

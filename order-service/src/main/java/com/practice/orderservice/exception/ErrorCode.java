@@ -1,6 +1,5 @@
-package com.practice.userservice.exception;
+package com.practice.orderservice.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
@@ -15,5 +14,4 @@ public enum ErrorCode {
     ErrorCode(String description) {
         this.description = description;
     }
-
 }

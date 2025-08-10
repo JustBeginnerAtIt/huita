@@ -1,44 +1,65 @@
 package com.practice.orderservice.exception;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.practice.orderservice.exception.OrderErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class OrderServiceGlobalExceptionHandler {
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<OrderErrorResponse> handleNotFoundException(EntityNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new OrderErrorResponse("NOT_FOUND", ex.getMessage()));
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<OrderErrorResponse> handleUserNotFoundException(OrderNotFoundException ex) {
+        return new ResponseEntity<>(
+                new OrderErrorResponse(
+                        ErrorCode.NOT_FOUND.getDescription(),
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ),
+                HttpStatus.NOT_FOUND
+        );
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<OrderErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new OrderErrorResponse("BAD_REQUEST", ex.getMessage()));
+        return new ResponseEntity<>(
+                new OrderErrorResponse(
+                        ErrorCode.BAD_REQUEST.getDescription(),
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<OrderErrorResponse> handleException(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new OrderErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage()));
+        return new ResponseEntity<>(
+                new OrderErrorResponse(
+                        ErrorCode.INTERNAL_SERVER_ERROR.getDescription(),
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
-    @ExceptionHandler
-    public ResponseEntity<OrderErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldErrors()
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<OrderErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        String errors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        return ResponseEntity.badRequest().body(new OrderErrorResponse("VALIDATION_ERROR", message));
+        return new ResponseEntity<>(
+                new OrderErrorResponse(
+                        ErrorCode.VALIDATION_ERROR.getDescription(),
+                        errors,
+                        LocalDateTime.now()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
     }
 }
