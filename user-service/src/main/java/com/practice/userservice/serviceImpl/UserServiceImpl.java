@@ -2,10 +2,10 @@ package com.practice.userservice.serviceImpl;
 
 import com.practice.userservice.dto.UserRequestDto;
 import com.practice.userservice.dto.UserResponseDto;
+import com.practice.userservice.exception.UserNotFoundException;
 import com.practice.userservice.mapping.UserMapping;
 import com.practice.userservice.repository.UserRepository;
 import com.practice.userservice.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,12 +25,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        userRepository.save(userMapping.mapToEntity(userRequestDto));
-        return null;
+        var entityUser = userMapping.mapToEntity(userRequestDto);
+        var savedUser = userRepository.save(entityUser);
+        return userMapping.mapToDto(savedUser);
     }
 
     @Override
     public void deleteUser(Integer userId) {
+        if(!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("User with ID " + userId + " not found");
+        }
         userRepository.deleteById(userId);
     }
 
@@ -39,7 +43,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserResponseDto> optUserDto = userRepository.findById(userId)
                 .map(userMapping::mapToDto);
         return optUserDto
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found"));
     }
 
     @Override
