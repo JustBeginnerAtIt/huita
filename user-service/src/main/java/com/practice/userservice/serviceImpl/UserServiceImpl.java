@@ -34,21 +34,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        log.info("Mapping user entity from UserRequestDto...");
+        log.debug("Mapping user entity from UserRequestDto...");
         var entityUser = userMapping.mapToEntity(userRequestDto);
-        log.info("User entity successfully mapped from UserRequestDto: {}", entityUser);
-        log.info("Saving user entity to DB...");
+        log.info("User entity with username {} successfully mapped from UserRequestDto", entityUser.getUsername());
+        log.debug("Saving user entity to DB...");
         var savedUser = userRepository.save(entityUser);
-        log.info("User entity successfully saved in DB: {}", savedUser);
-        log.info("Mapping and Returning user Entity to UserResponseDto...");
+        log.info("User entity with username {} successfully saved in DB", savedUser.getUsername());
+        log.debug("Mapping and Returning user Entity to UserResponseDto...");
         return userMapping.mapToDto(savedUser);
     }
 
     @Override
     public void deleteUser(Integer userId) {
-        log.info("Checking if user exists with id: {}", userId);
+        log.debug("Checking if user exists with id: {}", userId);
         if(!userRepository.existsById(userId)) {
-            log.info("User does not exist with id: {}", userId);
+            log.error("User does not exist with id: {}", userId);
             throw new UserNotFoundException("User with ID " + userId + " not found");
         }
         log.info("User found with id: {}", userId);
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        log.info("Searching all users from DB and pushing them to list...");
+        log.debug("Searching all users from DB and pushing them to list...");
         return userRepository.findAll()
                 .stream()
                 .map(userMapping::mapToDto)
@@ -78,18 +78,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserPagedResponse<UserResponseDto> getAllUsersByPage(Integer page, Integer size) {
-        log.info("Making pagination with parameters of the method");
+        log.debug("Making pagination with parameters of the method");
         Pageable pageable = PageRequest.of(page, size);
-        log.info("Making user page through searching all users in DB");
+        log.debug("Making user page through searching all users in DB");
         Page<User> userPage =  userRepository.findAll(pageable);
 
-        log.info("Making mapped list of users through stream API and mapping it to user response DTO");
+        log.debug("Making mapped list of users through stream API and mapping it to user response DTO");
         List<UserResponseDto> users = userPage.getContent()
                 .stream()
                 .map(userMapping::mapToDto)
                 .toList();
 
-        log.info("Returning paged response of made list");
+        log.debug("Returning paged response of made list");
         return UserPagedResponse.of(
                 users,
                 userPage.getNumber(),
