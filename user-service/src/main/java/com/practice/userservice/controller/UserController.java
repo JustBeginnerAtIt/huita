@@ -1,5 +1,6 @@
 package com.practice.userservice.controller;
 
+import com.practice.userservice.dto.UserPagedResponse;
 import com.practice.userservice.dto.UserRequestDto;
 import com.practice.userservice.dto.UserResponseDto;
 import com.practice.userservice.exception.ApiResponse;
@@ -42,5 +43,14 @@ public class UserController {
     public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsers() {
         List<UserResponseDto> users = userService.getAllUsers();
         return ResponseEntity.ok(ApiResponse.getSuccessResponse("Users found successfully", users));
+    }
+
+    @GetMapping("all/paged")
+    public ResponseEntity<UserPagedResponse<UserResponseDto>> getUsersWithPagination(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        UserPagedResponse<UserResponseDto> response = userService.getAllUsersByPage(page, size);
+        return ResponseEntity.ok(response);
     }
 }
