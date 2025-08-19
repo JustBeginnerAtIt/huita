@@ -1,5 +1,6 @@
 package com.practice.orderservice.service;
 
+import com.practice.orderservice.dto.OrderPagedResponse;
 import com.practice.orderservice.dto.OrderRequestDto;
 import com.practice.orderservice.dto.OrderResponseDto;
 
@@ -12,4 +13,5 @@ public interface OrderService {
     List<OrderResponseDto> getAllOrders();
     OrderResponseDto getOrderByUserId(Integer userId);
     List<OrderResponseDto> getOrdersByUserId(Integer userId);
+    OrderPagedResponse<OrderResponseDto> getAllOrdersByPage(Integer page, Integer size);
 }
