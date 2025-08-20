@@ -81,13 +81,14 @@ public class UserServiceImpl implements UserService {
         log.debug("Making pagination with parameters of the method");
         Pageable pageable = PageRequest.of(page, size);
         log.debug("Making user page through searching all users in DB");
-        Page<User> userPage =  userRepository.findAll(pageable);
+        Page<User> userPage = userRepository.findAll(pageable);
 
         log.debug("Making mapped list of users through stream API and mapping it to user response DTO");
         List<UserResponseDto> users = userPage.getContent()
                 .stream()
                 .map(userMapping::mapToDto)
                 .toList();
+        log.info("Made list of users: {}", users);
 
         log.debug("Returning paged response of made list");
         return UserPagedResponse.of(
