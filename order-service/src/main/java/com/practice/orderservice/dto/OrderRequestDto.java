@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-public class OrderRequestDto {
+public class OrderRequestDto implements Serializable {
     @NotBlank(message = "Description is required")
     private String description;
     @NotNull(message = "Price is required")

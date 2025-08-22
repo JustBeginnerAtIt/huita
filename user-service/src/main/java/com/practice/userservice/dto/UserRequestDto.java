@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-public class UserRequestDto {
+public class UserRequestDto implements Serializable {
     @NotBlank(message = "Username is required")
     private String username;
     @NotBlank(message = "Email is required")

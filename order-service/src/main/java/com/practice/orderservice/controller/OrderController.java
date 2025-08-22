@@ -1,5 +1,6 @@
 package com.practice.orderservice.controller;
 
+import com.practice.orderservice.dto.OrderPagedResponse;
 import com.practice.orderservice.dto.OrderRequestDto;
 import com.practice.orderservice.dto.OrderResponseDto;
 import com.practice.orderservice.exception.OrderApiResponse;
@@ -54,5 +55,14 @@ public class OrderController {
     public ResponseEntity<OrderApiResponse<OrderResponseDto>> getOrderByUserId(@Valid @PathVariable("userId") Integer userId) {
         OrderResponseDto orderByUserId = orderService.getOrderByUserId(userId);
         return ResponseEntity.ok(OrderApiResponse.getSuccessResponse("Order found successfully by User ID", orderByUserId));
+    }
+
+    @GetMapping("all/paged")
+    public ResponseEntity<OrderPagedResponse<OrderResponseDto>> getUsersWithPagination(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        OrderPagedResponse<OrderResponseDto> response = orderService.getAllOrdersByPage(page, size);
+        return ResponseEntity.ok(response);
     }
 }
